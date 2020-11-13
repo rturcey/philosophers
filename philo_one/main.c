@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/12 11:17:34 by user42           ###   ########.fr       */
+/*   Updated: 2020/11/13 11:39:07 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int		print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
+	pthread_mutex_lock(*phi->print);
 	if (!(msg = ft_itoa(phi->time)))
 		return (-1);
 	if (!(msg = ft_strjoin_sp(msg, ft_itoa(phi->i + 1))))
@@ -34,68 +35,8 @@ int		print_msg(char *dup, t_phi *phi)
 		return (-1);
 	print_str(msg, 1);
 	free(msg);
+	pthread_mutex_unlock(*phi->print);
 	return (0);
-}
-
-#include <stdio.h>
-
-int		check_death(t_phi *phi)
-{
-	phi->time = time_ms() - phi->origin;
-	if ((phi->time - phi->prev_meal[phi->i]) < phi->time_to_die)
-		return (0);
-	print_msg(ft_strdup("died\n"), phi);
-	phi->isdead = 1;
-	return (1);
-}
-
-void	is_eating(t_phi *phi)
-{
-	phi->time = time_ms() - phi->origin;
-	phi->prev_meal[phi->i] = phi->time;
-	print_msg(ft_strdup("is eating\n"), phi);
-	usleep(phi->time_to_eat / 1000);
-	phi->time = time_ms() - phi->origin;
-	phi->prev_meal[phi->i] = phi->time;
-}
-
-void	is_sleeping(t_phi *phi)
-{
-	time_t	stock;
-
-	phi->time = time_ms() - phi->origin;
-	stock = phi->time;
-	print_msg(ft_strdup("is sleeping\n"), phi);
-	while (phi->time < stock + phi->time_to_sleep)
-	{
-		if (check_death(phi))
-			return ;
-		phi->time = time_ms();
-	}
-}
-
-void	lock_forks(t_phi *phi)
-{
-	if (phi->i == phi->nb - 1)
-		pthread_mutex_lock(phi->forks[0]);
-	else
-		pthread_mutex_lock(phi->forks[phi->i + 1]);
-	if (check_death(phi))
-		return ;
-	print_msg(ft_strdup("has taken a fork\n"), phi);
-	pthread_mutex_lock(phi->forks[phi->i]);
-	if (check_death(phi))
-		return ;
-	print_msg(ft_strdup("has taken a fork\n"), phi);
-}
-
-void	unlock_forks(t_phi *phi)
-{
-	if (phi->i == phi->nb - 1)
-		pthread_mutex_unlock(phi->forks[0]);
-	else
-		pthread_mutex_unlock(phi->forks[phi->i + 1]);
-	pthread_mutex_unlock(phi->forks[phi->i]);
 }
 
 void	*philosophize(void *arg)
@@ -117,29 +58,30 @@ void	*philosophize(void *arg)
 			return (NULL);
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
-	return (NULL);		
+	return (NULL);
 }
 
-void	launch_threads(t_phi *phi)
+void	launch_threads(t_phi **phi)
 {
 	pthread_t	*threads;
+	int			i;
 
-	if (!(threads = malloc(sizeof(pthread_t) * phi->nb)))
+	if (!(threads = malloc(sizeof(pthread_t) * phi[0]->nb)))
 		return ;
-	phi->i = -1;
-	while (++phi->i < phi->nb && phi->isdead == 0)
-		pthread_create(&threads[phi->i], NULL, philosophize, phi);
-	phi->i = -1;
-	while (++phi->i < phi->nb)
-		pthread_join(threads[phi->i], NULL);
+	i = -1;
+	while (++i < phi[0]->nb)
+		pthread_create(&threads[i], NULL, philosophize, phi[i]);
+	i = -1;
+	while (++i < phi[0]->nb)
+		pthread_join(threads[i], NULL);
 	free (threads);
 }
 
 int		main(int argc, char **argv)
 {
-	t_phi	*phi;
+	t_phi	**phi;
 	int		i;
-	
+
 	i = -1;
 	if (argc < 5 || argc > 6)
 	{
@@ -148,10 +90,7 @@ int		main(int argc, char **argv)
 	}
 	if (!(phi = parse_argv(argv)))
 		return (-1);
-	if (!(*(phi->print) = malloc(sizeof(pthread_mutex_t))))
-		return (-1);
-	pthread_mutex_init(*(phi->print), NULL);
 	launch_threads(phi);
-	clean_phi(phi);
+	free_phi(phi, phi[0]->nb);
 	return (0);
 }

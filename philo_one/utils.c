@@ -3,14 +3,88 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/11 12:05:30 by user42           ###   ########.fr       */
+/*   Updated: 2020/11/13 11:39:35 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
+
+int			init_mutex(t_phi **phi, int max)
+{
+	int				i;
+	pthread_mutex_t	**forks;
+	pthread_mutex_t	*print;
+
+	i = -1;
+	if (!(forks = malloc(sizeof(pthread_mutex_t *) * (max))))
+		return (-1);
+	while (++i < max)
+	{
+		if (!(forks[i] = malloc(sizeof(pthread_mutex_t))))
+			return (-1);
+		pthread_mutex_init(forks[i], NULL);
+	}
+	if (!(print = malloc(sizeof(pthread_mutex_t))))
+		return (-1);
+	pthread_mutex_init(print, NULL);
+	while (--i >= 0)
+	{
+		phi[i]->forks = &forks;
+		phi[i]->print = &print;
+	}
+	return (0);
+}
+
+t_phi		**init_phi(int options[5])
+{
+	int		i;
+	t_phi	**phi;
+
+	i = -1;
+	if (!(phi = malloc(options[0] * sizeof(t_phi))))
+		return (NULL);
+	while (++i < options[0])
+	{
+		if (!(phi[i] = malloc(sizeof(t_phi))))
+			return (free_phi(phi, options[0]));
+		phi[i]->nb = options[0];
+		phi[i]->time_to_die = options[1];
+		phi[i]->time_to_eat = options[2];
+		phi[i]->time_to_sleep = options[3];
+		phi[i]->isdead = 0;
+		phi[i]->i = i;
+		phi[i]->forks = NULL;
+		phi[i]->print = NULL;
+		if (options[4])
+			phi[i]->nb_each = options[4];
+		else
+			phi[i]->nb_each = 0;
+	}
+	return (phi);
+}
+
+t_phi		**free_phi(t_phi **phi, int max)
+{
+	int		i;
+
+	i = -1;
+	if (phi && phi[0] && phi[0]->forks)
+	{
+		while(++i < max)
+			free(*phi[0]->forks[i]);
+		free(*phi[0]->forks);
+	}
+	if(phi && phi[0] && phi[0]->print)
+		free(*phi[0]->print);
+	i = -1;
+	while (++i < max)
+		free(phi[i]);
+	free(phi);
+	return (NULL);
+}
 
 int			ft_isdigit(char c)
 {
@@ -19,45 +93,9 @@ int			ft_isdigit(char c)
 	return (0);
 }
 
-size_t		ft_strlen(char *str)
-{
-	int		i;
-
-	i = 0;
-	while (str[i])
-		++i;
-	return (i);
-}
-
 void		*print_str(char *str, int fd)
 {
 	if (str)
 		write(fd, str, ft_strlen(str));
 	return (NULL);
-}
-
-long long	ft_atoi(const char *str)
-{
-	long long	result;
-	int			minus;
-	int			i;
-
-	i = 0;
-	result = 0;
-	minus = 1;
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
-		|| str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			minus *= -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		result = result * 10 + (str[i] - 48);
-		i++;
-	}
-	return (result * minus);
 }
