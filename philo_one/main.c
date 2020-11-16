@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/13 11:39:07 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/16 12:37:48 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ int		print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
-	pthread_mutex_lock(*phi->print);
+	if (g_isdead)
+		return (0);
 	if (!(msg = ft_itoa(phi->time)))
 		return (-1);
 	if (!(msg = ft_strjoin_sp(msg, ft_itoa(phi->i + 1))))
@@ -35,26 +36,30 @@ int		print_msg(char *dup, t_phi *phi)
 		return (-1);
 	print_str(msg, 1);
 	free(msg);
-	pthread_mutex_unlock(*phi->print);
 	return (0);
 }
 
 void	*philosophize(void *arg)
 {
 	t_phi	*phi;
+	int		i;
 
 	phi = (t_phi *)arg;
 	phi->origin = time_ms();
 	phi->time = 0;
-	while(phi->isdead == 0)
+	phi->prev_meal = 0;
+	i = -1;
+	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
 		lock_forks(phi);
-		if (phi->isdead == 1 || check_death(phi))
+		if (g_isdead == 1 || check_death(phi))
 			return (NULL);
 		is_eating(phi);
 		unlock_forks(phi);
+		if (g_isdead || (phi->nb_each && i == phi->nb_each - 1))
+			break ;
 		is_sleeping(phi);
-		if (phi->isdead == 1 || check_death(phi))
+		if (g_isdead == 1 || check_death(phi))
 			return (NULL);
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
@@ -68,13 +73,18 @@ void	launch_threads(t_phi **phi)
 
 	if (!(threads = malloc(sizeof(pthread_t) * phi[0]->nb)))
 		return ;
+	i = 0;
+	while (++i < phi[0]->nb)
+		if (i % 2)
+			pthread_create(&threads[i], NULL, philosophize, phi[i]);
 	i = -1;
 	while (++i < phi[0]->nb)
-		pthread_create(&threads[i], NULL, philosophize, phi[i]);
+		if (!(i % 2))
+			pthread_create(&threads[i], NULL, philosophize, phi[i]);
 	i = -1;
 	while (++i < phi[0]->nb)
 		pthread_join(threads[i], NULL);
-	free (threads);
+	free(threads);
 }
 
 int		main(int argc, char **argv)
@@ -83,6 +93,7 @@ int		main(int argc, char **argv)
 	int		i;
 
 	i = -1;
+	g_isdead = 0;
 	if (argc < 5 || argc > 6)
 	{
 		print_str("Incorrect number of arguments.\n", 2);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
+/*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 10:57:41 by user42            #+#    #+#             */
-/*   Updated: 2020/11/11 11:38:23 by user42           ###   ########.fr       */
+/*   Updated: 2020/11/16 10:13:39 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*ft_strdup(const char *s1)
 	return (cpy);
 }
 
-char		*ft_strjoin_sp(char *s1, char *s2)
+char	*ft_strjoin_sp(char *s1, char *s2)
 {
 	char	*new;
 	int		i;
