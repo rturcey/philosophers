@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/16 12:40:35 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/30 10:50:40 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int			init_mutex(t_phi **phi, int max)
 	int				i;
 	pthread_mutex_t	**forks;
 	pthread_mutex_t	*print;
+	pthread_mutex_t	*take;
 	int				*try_forks;
 
 	i = -1;
@@ -45,10 +46,14 @@ int			init_mutex(t_phi **phi, int max)
 	}
 	if (!(print = malloc(sizeof(pthread_mutex_t))))
 		return (-1);
+	if (!(take = malloc(sizeof(pthread_mutex_t))))
+		return (-1);
 	pthread_mutex_init(print, NULL);
+	pthread_mutex_init(take, NULL);
 	while (--i >= 0 && (phi[i]->forks = forks))
 	{
 		phi[i]->print = print;
+		phi[i]->take = take;
 		phi[i]->try_forks = try_forks;
 	}
 	return (0);
@@ -95,6 +100,8 @@ t_phi		**free_phi(t_phi **phi, int max)
 	free(phi[0]->try_forks);
 	if (phi && phi[0] && phi[0]->print)
 		free(phi[0]->print);
+	if (phi && phi[0] && phi[0]->take)
+		free(phi[0]->take);
 	i = -1;
 	while (++i < max)
 		free(phi[i]);

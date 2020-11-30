@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/11/28 18:08:23 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/30 10:54:27 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int		check_death(t_phi *phi)
 		print_msg(ft_strdup("died\n"), phi);
 	g_isdead = 1;
 	pthread_mutex_unlock(phi->print);
+	pthread_mutex_unlock(phi->take);
 	return (1);
 }
 
@@ -57,6 +58,7 @@ void	is_sleeping(t_phi *phi)
 
 void	lock_forks(t_phi *phi)
 {
+	pthread_mutex_lock(phi->take);
 	while (phi->try_forks[phi->i] || ((phi->i == phi->nb - 1 &&
 	phi->try_forks[0]) || (phi->i < phi->nb - 1 &&
 	phi->try_forks[phi->i + 1])))
@@ -65,10 +67,13 @@ void	lock_forks(t_phi *phi)
 			return ;
 	}
 	pthread_mutex_lock(phi->forks[phi->i]);
+	if (check_death(phi))
+	{
+		pthread_mutex_unlock(phi->forks[phi->i]);
+		return ;
+	}
 	phi->try_forks[phi->i] = 1;
 	print_msg(ft_strdup("has taken a fork\n"), phi);
-	if (check_death(phi))
-		return ;
 	while (phi->nb == 1)
 	{
 		if (check_death(phi))
@@ -81,6 +86,7 @@ void	lock_forks(t_phi *phi)
 	if (check_death(phi))
 		return ;
 	print_msg(ft_strdup("has taken a fork\n"), phi);
+	pthread_mutex_unlock(phi->take);
 }
 
 void	unlock_forks(t_phi *phi)

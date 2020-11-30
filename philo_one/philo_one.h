@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/11/16 12:04:20 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/30 10:48:46 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct		s_phi
 	pthread_mutex_t	**forks;
 	int				*try_forks;
 	pthread_mutex_t	*print;
+	pthread_mutex_t	*take;
 
 }					t_phi;
 
