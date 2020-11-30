@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/11/16 12:04:26 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/28 18:08:23 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,28 +58,28 @@ void	is_sleeping(t_phi *phi)
 void	lock_forks(t_phi *phi)
 {
 	while (phi->try_forks[phi->i] || ((phi->i == phi->nb - 1 &&
-	phi->try_forks[0]) || (phi->try_forks[phi->i + 1])))
+	phi->try_forks[0]) || (phi->i < phi->nb - 1 &&
+	phi->try_forks[phi->i + 1])))
 	{
 		if (check_death(phi))
 			return ;
 	}
 	pthread_mutex_lock(phi->forks[phi->i]);
 	phi->try_forks[phi->i] = 1;
-	if (check_death(phi))
-		return ;
-	if (phi->i == phi->nb - 1)
-	{
-		pthread_mutex_lock(phi->forks[0]);
-		phi->try_forks[0] = 1;
-	}
-	else
-	{
-		pthread_mutex_lock(phi->forks[phi->i + 1]);
-		phi->try_forks[phi->i + 1] = 1;
-	}
-	if (check_death(phi))
-		return ;
 	print_msg(ft_strdup("has taken a fork\n"), phi);
+	if (check_death(phi))
+		return ;
+	while (phi->nb == 1)
+	{
+		if (check_death(phi))
+			return ;
+	}
+	if (phi->i == phi->nb - 1 && pthread_mutex_lock(phi->forks[0]) == 0)
+		phi->try_forks[0] = 1;
+	else if (pthread_mutex_lock(phi->forks[phi->i + 1]) == 0)
+		phi->try_forks[phi->i + 1] = 1;
+	if (check_death(phi))
+		return ;
 	print_msg(ft_strdup("has taken a fork\n"), phi);
 }
 

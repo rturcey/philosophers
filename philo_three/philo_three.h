@@ -1,24 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_two.h                                        :+:      :+:    :+:   */
+/*   philo_three.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 14:10:50 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/28 17:53:49 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_TWO_H
-# define PHILO_TWO_H
+#ifndef PHILO_THREE_H
+# define PHILO_THREE_H
 
 # include <unistd.h>
 # include <stdlib.h>
 # include <pthread.h>
 # include <fcntl.h>
 # include <sys/time.h>
+# include <signal.h>
 # include <semaphore.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 typedef struct		s_phi
 {
@@ -35,6 +38,7 @@ typedef struct		s_phi
 	sem_t			*print;
 	sem_t			*take;
 	pthread_t		thread;
+	pid_t			pid;
 
 }					t_phi;
 
@@ -60,5 +64,7 @@ t_phi				**init_phi(int options[5]);
 t_phi				**free_phi(t_phi **phi, int max);
 int					init_sem(t_phi **phi, int max);
 void				*check(void *arg);
+void				process(t_phi **phi);
+void				*philosophize(void *arg);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/16 12:37:48 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/28 18:10:10 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,20 @@ int		print_msg(char *dup, t_phi *phi)
 	char	*msg;
 
 	if (g_isdead)
+	{
+		free(dup);
 		return (0);
+	}
 	if (!(msg = ft_itoa(phi->time)))
+	{
+		free(dup);
 		return (-1);
+	}
 	if (!(msg = ft_strjoin_sp(msg, ft_itoa(phi->i + 1))))
+	{
+		free(dup);
 		return (-1);
+	}
 	if (!(msg = ft_strjoin_sp(msg, dup)))
 		return (-1);
 	print_str(msg, 1);
@@ -63,6 +72,7 @@ void	*philosophize(void *arg)
 			return (NULL);
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
+	check_death(phi);
 	return (NULL);
 }
 

@@ -6,11 +6,11 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/11 10:57:41 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 12:51:14 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/28 14:28:59 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_three.h"
 
 char	*ft_strdup(const char *s1)
 {

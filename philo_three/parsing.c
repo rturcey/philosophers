@@ -6,11 +6,11 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 09:01:30 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 12:08:59 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/28 14:28:51 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_three.h"
 
 t_phi		**parse_options(int options[5])
 {

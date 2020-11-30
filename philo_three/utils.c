@@ -6,11 +6,11 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 14:14:43 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/28 17:57:22 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_three.h"
 
 int			print_msg(char *dup, t_phi *phi)
 {

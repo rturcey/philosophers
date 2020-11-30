@@ -6,11 +6,11 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 14:13:24 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/28 18:20:46 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo_two.h"
+#include "philo_three.h"
 
 time_t	time_ms(void)
 {
@@ -23,8 +23,12 @@ time_t	time_ms(void)
 void	*check(void *arg)
 {
 	t_phi	*phi;
+	int		i;
 
 	phi = (t_phi *)arg;
+	i = 0;
+	while(phi->origin == 0)
+		++i;
 	while (g_isdead == 0 && g_end < phi->nb)
 	{
 		if (time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
@@ -34,6 +38,7 @@ void	*check(void *arg)
 			if (g_isdead == 0)
 				print_msg(ft_strdup("died\n"), phi);
 			g_isdead = 1;
+			exit (1);
 			sem_post(phi->print);
 			return (NULL);
 		}
@@ -47,6 +52,7 @@ void	*philosophize(void *arg)
 	int		i;
 
 	phi = (t_phi *)arg;
+	pthread_create(&phi->thread, NULL, check, phi);
 	phi->time = 0;
 	phi->prev_meal = 0;
 	i = -1;
@@ -67,32 +73,25 @@ void	*philosophize(void *arg)
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
 	g_end++;
-	return (NULL);
+	exit(1);
 }
 
 void	launch_threads(t_phi **phi)
 {
-	pthread_t	*checks;
 	int			i;
+	int			status;
 
-	if (!(checks = malloc(sizeof(pthread_t) * phi[0]->nb)))
-		return ;
-	i = -1;
-	while (++i < phi[0]->nb)
+	process(phi);
+	while (42)
 	{
-		phi[i]->origin = time_ms();
-		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
+		i = -1;
+		if (waitpid(-1, &status, WUNTRACED) == -1 || WIFEXITED(status))
+		{
+			while (++i < phi[0]->nb)
+				kill(phi[i]->pid, SIGINT);
+			break ;
+		}
 	}
-	i = -1;
-	while (++i < phi[0]->nb)
-		pthread_create(&checks[i], NULL, check, phi[i]);
-	i = -1;
-	while (++i < phi[0]->nb)
-	{
-		pthread_detach(phi[i]->thread);
-		pthread_join(checks[i], NULL);
-	}
-	free(checks);
 }
 
 int		main(int argc, char **argv)
