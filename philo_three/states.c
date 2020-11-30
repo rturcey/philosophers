@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/11/28 18:20:36 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/30 10:38:09 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ int		check_death(t_phi *phi)
 	if (g_isdead == 0)
 		print_msg(ft_strdup("died\n"), phi);
 	g_isdead = 1;
-	sem_post(phi->print);
 	return (1);
 }
 

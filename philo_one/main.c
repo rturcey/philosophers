@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 18:10:10 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/30 10:44:27 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ void	*philosophize(void *arg)
 	int		i;
 
 	phi = (t_phi *)arg;
-	phi->origin = time_ms();
 	phi->time = 0;
 	phi->prev_meal = 0;
 	i = -1;
@@ -83,6 +82,10 @@ void	launch_threads(t_phi **phi)
 
 	if (!(threads = malloc(sizeof(pthread_t) * phi[0]->nb)))
 		return ;
+	i = 0;
+	phi[0]->origin = time_ms();
+	while (++i < phi[0]->nb)
+		phi[i]->origin = phi[0]->origin;
 	i = 0;
 	while (++i < phi[0]->nb)
 		if (i % 2)

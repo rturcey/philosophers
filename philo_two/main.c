@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 14:13:24 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/11/30 10:44:16 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,10 @@ void	launch_threads(t_phi **phi)
 	if (!(checks = malloc(sizeof(pthread_t) * phi[0]->nb)))
 		return ;
 	i = -1;
+	phi[0]->origin = time_ms();
 	while (++i < phi[0]->nb)
 	{
-		phi[i]->origin = time_ms();
+		phi[i]->origin = phi[0]->origin;
 		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
 	}
 	i = -1;
