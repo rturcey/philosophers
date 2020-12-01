@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/01 17:04:42 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 18:04:03 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int		print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
-	if (g_isdead)
+	if (g_isdead == 1)
 	{
 		free(dup);
 		return (0);
@@ -43,8 +43,11 @@ int		print_msg(char *dup, t_phi *phi)
 	}
 	if (!(msg = ft_strjoin_sp(msg, dup)))
 		return (-1);
-	print_str(msg, 1);
+	pthread_mutex_lock(phi->print);
+	if (g_isdead == 0)
+		print_str(msg, 1);
 	free(msg);
+	pthread_mutex_unlock(phi->print);
 	return (0);
 }
 
@@ -60,15 +63,11 @@ void	*philosophize(void *arg)
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
 		lock_forks(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
 		is_eating(phi);
 		unlock_forks(phi);
 		if (g_isdead || (phi->nb_each && i == phi->nb_each - 1))
 			break ;
 		is_sleeping(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
 	check_death(phi);
