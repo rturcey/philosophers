@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/01 12:43:13 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 12:57:23 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,9 @@ int			print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
-	sem_wait(phi->print);
 	if (g_isdead == 1)
 	{
 		free(dup);
-		sem_post(phi->print);
 		return (0);
 	}
 	if (!(msg = ft_itoa(phi->time)))
@@ -35,12 +33,8 @@ int			print_msg(char *dup, t_phi *phi)
 	}
 	if (!(msg = ft_strjoin_sp(msg, dup)))
 		return (-1);
-	if (g_isdead < 1)
-		print_str(msg, 1);
+	print_str(msg, 1);
 	free(msg);
-	if (g_isdead == -1)
-		g_isdead = 1;
-	sem_post(phi->print);
 	return (0);
 }
 
