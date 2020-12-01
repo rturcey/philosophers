@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/30 10:44:16 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 12:43:15 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,9 @@ void	*check(void *arg)
 		if (time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
 		{
 			phi->time = time_ms() - phi->origin;
-			sem_wait(phi->print);
-			if (g_isdead == 0)
+			if (g_isdead == 0 && (g_isdead = -1))
 				print_msg(ft_strdup("died\n"), phi);
-			g_isdead = 1;
-			sem_post(phi->print);
+			sem_post(phi->take);
 			return (NULL);
 		}
 	}
@@ -65,6 +63,7 @@ void	*philosophize(void *arg)
 		if (g_isdead == 1 || check_death(phi))
 			return (NULL);
 		print_msg(ft_strdup("is thinking\n"), phi);
+		sem_post(phi->print);
 	}
 	g_end++;
 	return (NULL);
