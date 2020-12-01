@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/01 12:57:32 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 15:00:31 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,9 @@ void	*check(void *arg)
 		if (time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
 		{
 			phi->time = time_ms() - phi->origin;
-			sem_wait(phi->print);
 			if (g_isdead == 0)
 				print_msg(ft_strdup("died\n"), phi);
 			g_isdead = 1;
-			sem_post(phi->print);
 			return (NULL);
 		}
 	}
@@ -53,19 +51,18 @@ void	*philosophize(void *arg)
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
 		lock_forks(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
+		if (check_death(phi))
+			break ;
 		is_eating(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
+		if (check_death(phi))
+			break ;
 		unlock_forks(phi);
-		if (g_isdead || (phi->nb_each && i == phi->nb_each - 1))
+		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
 			break ;
 		is_sleeping(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
+		if (check_death(phi))
+			break ;
 		print_msg(ft_strdup("is thinking\n"), phi);
-		sem_post(phi->print);
 	}
 	g_end++;
 	return (NULL);
