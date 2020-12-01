@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/01 18:18:43 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 18:20:25 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	is_sleeping(t_phi *phi)
 
 void	lock_forks(t_phi *phi)
 {
-	pthread_mutex_lock(phi->take);
 	pthread_mutex_lock(phi->forks[phi->i]);
 	if (check_death(phi))
 	{
@@ -80,7 +79,6 @@ void	lock_forks(t_phi *phi)
 		return ;
 	}
 	print_msg(ft_strdup("has taken a fork\n"), phi);
-	pthread_mutex_unlock(phi->take);
 }
 
 void	unlock_forks(t_phi *phi)
