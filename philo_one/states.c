@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/11/30 10:54:27 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 17:15:55 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	is_eating(t_phi *phi)
 	print_msg(ft_strdup("is eating\n"), phi);
 	while (time_ms() - phi->origin < stock + phi->time_to_eat)
 	{
+		usleep(20);
 		if (check_death(phi))
 			return ;
 	}
@@ -51,6 +52,7 @@ void	is_sleeping(t_phi *phi)
 	print_msg(ft_strdup("is sleeping\n"), phi);
 	while (time_ms() - phi->origin < stock + phi->time_to_sleep)
 	{
+		usleep(20);
 		if (check_death(phi))
 			return ;
 	}
