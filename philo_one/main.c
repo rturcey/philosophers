@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/30 10:44:27 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 17:01:03 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,14 +86,9 @@ void	launch_threads(t_phi **phi)
 	phi[0]->origin = time_ms();
 	while (++i < phi[0]->nb)
 		phi[i]->origin = phi[0]->origin;
-	i = 0;
-	while (++i < phi[0]->nb)
-		if (i % 2)
-			pthread_create(&threads[i], NULL, philosophize, phi[i]);
 	i = -1;
 	while (++i < phi[0]->nb)
-		if (!(i % 2))
-			pthread_create(&threads[i], NULL, philosophize, phi[i]);
+		pthread_create(&threads[i], NULL, philosophize, phi[i]);
 	i = -1;
 	while (++i < phi[0]->nb)
 		pthread_join(threads[i], NULL);
