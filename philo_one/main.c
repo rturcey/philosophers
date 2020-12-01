@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/01 18:04:03 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/01 18:11:54 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,24 @@ void	*philosophize(void *arg)
 {
 	t_phi	*phi;
 	int		i;
+	int		lever;
 
 	phi = (t_phi *)arg;
 	phi->time = 0;
 	phi->prev_meal = 0;
 	i = -1;
+	lever = 0;
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
-		lock_forks(phi);
-		is_eating(phi);
-		unlock_forks(phi);
-		if (g_isdead || (phi->nb_each && i == phi->nb_each - 1))
-			break ;
+		if ((!(phi->i % 2) && lever == 1) || phi->i % 2)
+		{
+			lock_forks(phi);
+			is_eating(phi);
+			unlock_forks(phi);
+			if (g_isdead || (phi->nb_each && i == phi->nb_each - 1))
+				break ;
+		}
+		lever = 1;
 		is_sleeping(phi);
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
