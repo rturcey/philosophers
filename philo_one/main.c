@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 16:09:12 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 16:48:10 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	*check(void *arg)
 		pthread_mutex_lock(phi->eat);
 		if (time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
 		{
-			phi->time = time_ms() - phi->origin;
 			if (g_isdead == 0)
 				print_msg(ft_strdup("died\n"), phi);
 			g_isdead = 1;
@@ -58,7 +57,7 @@ void	*philosophize(void *arg)
 		lock_forks(phi);
 		is_eating(phi);
 		unlock_forks(phi);
-		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
+		if (phi->nb_each && i == phi->nb_each - 1)
 			break ;
 		is_sleeping(phi);
 		print_msg(ft_strdup("is thinking\n"), phi);
@@ -74,28 +73,24 @@ void	launch_threads(t_phi **phi)
 
 	if (!(checks = malloc(sizeof(pthread_t) * phi[0]->nb)))
 		return ;
-	i = -1;
+	i = 0;
 	phi[0]->origin = time_ms();
-	while (++i < phi[0]->nb)
+	while (i < phi[0]->nb)
 	{
-		if (i % 2)
-		{
-			phi[i]->origin = phi[0]->origin;
-			pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
-			pthread_create(&checks[i], NULL, check, phi[i]);
-			usleep(200);
-		}
+		phi[i]->origin = phi[0]->origin;
+		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
+		pthread_create(&checks[i], NULL, check, phi[i]);
+		usleep(100);
+		i += 2;
 	}
-	i = -1;
-	while (++i < phi[0]->nb)
+	i = 1;
+	while (i < phi[0]->nb)
 	{
-		if (!(i % 2))
-		{
-			phi[i]->origin = phi[0]->origin;
-			pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
-			pthread_create(&checks[i], NULL, check, phi[i]);
-			usleep(200);
-		}
+		phi[i]->origin = phi[0]->origin;
+		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
+		pthread_create(&checks[i], NULL, check, phi[i]);
+		usleep(100);
+		i += 2;
 	}
 	i = -1;
 	while (++i < phi[0]->nb)
