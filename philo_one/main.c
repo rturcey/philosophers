@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 14:26:24 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 14:34:08 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,24 +45,16 @@ void	*philosophize(void *arg)
 {
 	t_phi	*phi;
 	int		i;
-	int		lever;
 
 	phi = (t_phi *)arg;
 	phi->time = 0;
 	phi->prev_meal = 0;
 	i = -1;
-	lever = 1;
-	if ((phi->i % 2))
-		lever = 0;
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
-		if (lever == 0)
-			usleep(200);
-		lever = 1;
 		lock_forks(phi);
 		is_eating(phi);
 		unlock_forks(phi);
-		lever = 1;
 		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
 			break ;
 		is_sleeping(phi);
@@ -85,12 +77,23 @@ void	launch_threads(t_phi **phi)
 	phi[0]->origin = time_ms();
 	while (++i < phi[0]->nb)
 	{
-		phi[i]->origin = phi[0]->origin;
-		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
+		if (i % 2)
+		{
+			phi[i]->origin = phi[0]->origin;
+			pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
+			pthread_create(&checks[i], NULL, check, phi[i]);
+		}
 	}
 	i = -1;
 	while (++i < phi[0]->nb)
-		pthread_create(&checks[i], NULL, check, phi[i]);
+	{
+		if (!(i % 2))
+		{
+			phi[i]->origin = phi[0]->origin;
+			pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
+			pthread_create(&checks[i], NULL, check, phi[i]);
+		}
+	}
 	i = -1;
 	while (++i < phi[0]->nb)
 	{
