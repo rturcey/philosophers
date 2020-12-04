@@ -1,5 +1,5 @@
 
-SRCS		= ft_itoa.c ft_strjoin.c ft_atoi.c ft_strlen.c ft_isdigit.c main.c parsing.c utils.c states.c
+SRCS		= ft_itoa.c ft_strjoin.c ft_atoi.c ft_strlen.c ft_isdigit.c main.c parsing.c utils.c states.c mutex.c
 
 INC_DIR		= ./
 INCLUDES	= philo_one.h

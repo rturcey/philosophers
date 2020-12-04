@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 14:06:19 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 16:17:03 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,7 @@ int		print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
-	if (g_isdead == 1)
-	{
-		free(dup);
-		return (0);
-	}
+	phi->time = time_ms() - phi->origin;
 	if (!(msg = ft_itoa(phi->time)))
 	{
 		free(dup);
@@ -38,53 +34,6 @@ int		print_msg(char *dup, t_phi *phi)
 		print_str(msg, 1);
 	free(msg);
 	pthread_mutex_unlock(phi->print);
-	return (0);
-}
-
-int			*init_try(int max)
-{
-	int		i;
-	int		*try_forks;
-
-	i = -1;
-	if (!(try_forks = malloc(sizeof(int) * max)))
-		return (NULL);
-	while (++i < max)
-		try_forks[i] = 0;
-	return (try_forks);
-}
-
-int			init_mutex(t_phi **phi, int max)
-{
-	int				i;
-	pthread_mutex_t	**forks;
-	pthread_mutex_t	*print;
-	pthread_mutex_t	*take;
-	int				*try_forks;
-
-	i = -1;
-	if (!(forks = malloc(sizeof(pthread_mutex_t *) * (max))))
-		return (-1);
-	if (!(try_forks = init_try(max)))
-		return (-1);
-	while (++i < max)
-	{
-		if (!(forks[i] = malloc(sizeof(pthread_mutex_t))))
-			return (-1);
-		pthread_mutex_init(forks[i], NULL);
-	}
-	if (!(print = malloc(sizeof(pthread_mutex_t))))
-		return (-1);
-	if (!(take = malloc(sizeof(pthread_mutex_t))))
-		return (-1);
-	pthread_mutex_init(print, NULL);
-	pthread_mutex_init(take, NULL);
-	while (--i >= 0 && (phi[i]->forks = forks))
-	{
-		phi[i]->print = print;
-		phi[i]->take = take;
-		phi[i]->try_forks = try_forks;
-	}
 	return (0);
 }
 
@@ -123,14 +72,13 @@ t_phi		**free_phi(t_phi **phi, int max)
 	if (phi && phi[0] && phi[0]->forks)
 	{
 		while (++i < max)
-			free(phi[0]->forks[i]);
+			pthread_mutex_destroy(phi[0]->forks[i]);
 		free(phi[0]->forks);
 	}
-	free(phi[0]->try_forks);
 	if (phi && phi[0] && phi[0]->print)
-		free(phi[0]->print);
-	if (phi && phi[0] && phi[0]->take)
-		free(phi[0]->take);
+		pthread_mutex_destroy(phi[0]->print);
+	if (phi && phi[0] && phi[0]->eat)
+		pthread_mutex_destroy(phi[0]->eat);
 	i = -1;
 	while (++i < max)
 		free(phi[i]);
