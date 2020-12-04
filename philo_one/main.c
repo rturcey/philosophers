@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 14:23:09 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 14:26:24 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,12 @@ void	*philosophize(void *arg)
 		lever = 0;
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
-		if (lever == 1)
-		{
-			lock_forks(phi);
-			is_eating(phi);
-			unlock_forks(phi);
-		}
+		if (lever == 0)
+			usleep(200);
+		lever = 1;
+		lock_forks(phi);
+		is_eating(phi);
+		unlock_forks(phi);
 		lever = 1;
 		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
 			break ;
