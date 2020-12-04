@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/01 18:11:54 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 14:23:09 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,33 +22,23 @@ time_t	time_ms(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-int		print_msg(char *dup, t_phi *phi)
+void	*check(void *arg)
 {
-	char	*msg;
+	t_phi	*phi;
 
-	if (g_isdead == 1)
+	phi = (t_phi *)arg;
+	while (g_isdead == 0 && g_end < phi->nb)
 	{
-		free(dup);
-		return (0);
+		if (time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
+		{
+			phi->time = time_ms() - phi->origin;
+			if (g_isdead == 0)
+				print_msg(ft_strdup("died\n"), phi);
+			g_isdead = 1;
+			return (NULL);
+		}
 	}
-	if (!(msg = ft_itoa(phi->time)))
-	{
-		free(dup);
-		return (-1);
-	}
-	if (!(msg = ft_strjoin_sp(msg, ft_itoa(phi->i + 1))))
-	{
-		free(dup);
-		return (-1);
-	}
-	if (!(msg = ft_strjoin_sp(msg, dup)))
-		return (-1);
-	pthread_mutex_lock(phi->print);
-	if (g_isdead == 0)
-		print_str(msg, 1);
-	free(msg);
-	pthread_mutex_unlock(phi->print);
-	return (0);
+	return (NULL);
 }
 
 void	*philosophize(void *arg)
@@ -61,48 +51,53 @@ void	*philosophize(void *arg)
 	phi->time = 0;
 	phi->prev_meal = 0;
 	i = -1;
-	lever = 0;
+	lever = 1;
+	if ((phi->i % 2))
+		lever = 0;
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
-		if ((!(phi->i % 2) && lever == 1) || phi->i % 2)
+		if (lever == 1)
 		{
 			lock_forks(phi);
 			is_eating(phi);
 			unlock_forks(phi);
-			if (g_isdead || (phi->nb_each && i == phi->nb_each - 1))
-				break ;
 		}
 		lever = 1;
+		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
+			break ;
 		is_sleeping(phi);
+		if (check_death(phi))
+			break ;
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
-	check_death(phi);
+	g_end++;
 	return (NULL);
 }
 
 void	launch_threads(t_phi **phi)
 {
-	pthread_t	*threads;
+	pthread_t	*checks;
 	int			i;
 
-	if (!(threads = malloc(sizeof(pthread_t) * phi[0]->nb)))
+	if (!(checks = malloc(sizeof(pthread_t) * phi[0]->nb)))
 		return ;
-	i = 0;
+	i = -1;
 	phi[0]->origin = time_ms();
 	while (++i < phi[0]->nb)
+	{
 		phi[i]->origin = phi[0]->origin;
-	i = 0;
-	while (++i < phi[0]->nb)
-		if (i % 2)
-			pthread_create(&threads[i], NULL, philosophize, phi[i]);
+		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
+	}
 	i = -1;
 	while (++i < phi[0]->nb)
-		if (!(i % 2))
-			pthread_create(&threads[i], NULL, philosophize, phi[i]);
+		pthread_create(&checks[i], NULL, check, phi[i]);
 	i = -1;
 	while (++i < phi[0]->nb)
-		pthread_join(threads[i], NULL);
-	free(threads);
+	{
+		pthread_detach(phi[i]->thread);
+		pthread_join(checks[i], NULL);
+	}
+	free(checks);
 }
 
 int		main(int argc, char **argv)
@@ -112,6 +107,7 @@ int		main(int argc, char **argv)
 
 	i = -1;
 	g_isdead = 0;
+	g_end = 0;
 	if (argc < 5 || argc > 6)
 	{
 		print_str("Incorrect number of arguments.\n", 2);

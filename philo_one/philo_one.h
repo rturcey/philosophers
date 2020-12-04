@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/11/30 10:48:46 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 13:42:26 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+#include <stdio.h>
 
 typedef struct		s_phi
 {
@@ -30,6 +31,7 @@ typedef struct		s_phi
 	time_t			time;
 	time_t			prev_meal;
 	pthread_mutex_t	**forks;
+	pthread_t		thread;
 	int				*try_forks;
 	pthread_mutex_t	*print;
 	pthread_mutex_t	*take;
@@ -37,6 +39,7 @@ typedef struct		s_phi
 }					t_phi;
 
 int		g_isdead;
+int		g_end;
 
 long long			ft_atoi(const char *str);
 void				*print_str(char *str, int fd);
@@ -56,5 +59,7 @@ void				unlock_forks(t_phi *phi);
 t_phi				**init_phi(int options[5]);
 t_phi				**free_phi(t_phi **phi, int max);
 int					init_mutex(t_phi **phi, int max);
+void				*check(void *arg);
+int					ft_strcmp(const char *s1, const char *s2);
 
 #endif

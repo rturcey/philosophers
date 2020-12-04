@@ -6,11 +6,40 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/30 10:50:40 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 14:06:19 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
+
+int		print_msg(char *dup, t_phi *phi)
+{
+	char	*msg;
+
+	if (g_isdead == 1)
+	{
+		free(dup);
+		return (0);
+	}
+	if (!(msg = ft_itoa(phi->time)))
+	{
+		free(dup);
+		return (-1);
+	}
+	if (!(msg = ft_strjoin_sp(msg, ft_itoa(phi->i + 1))))
+	{
+		free(dup);
+		return (-1);
+	}
+	if (!(msg = ft_strjoin_sp(msg, dup)))
+		return (-1);
+	pthread_mutex_lock(phi->print);
+	if (g_isdead == 0)
+		print_str(msg, 1);
+	free(msg);
+	pthread_mutex_unlock(phi->print);
+	return (0);
+}
 
 int			*init_try(int max)
 {
