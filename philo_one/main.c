@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 14:34:08 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 14:38:00 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void	launch_threads(t_phi **phi)
 			phi[i]->origin = phi[0]->origin;
 			pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
 			pthread_create(&checks[i], NULL, check, phi[i]);
+			usleep(200);
 		}
 	}
 	i = -1;
@@ -92,6 +93,7 @@ void	launch_threads(t_phi **phi)
 			phi[i]->origin = phi[0]->origin;
 			pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
 			pthread_create(&checks[i], NULL, check, phi[i]);
+			usleep(200);
 		}
 	}
 	i = -1;
