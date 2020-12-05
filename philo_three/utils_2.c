@@ -6,11 +6,36 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 17:27:09 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 10:43:24 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:50:20 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_three.h"
+
+char	*ft_strstr(const char *haystack, const char *needle)
+{
+	size_t	i;
+	size_t	j;
+	char	*haycast;
+
+	if (!haystack)
+		return (NULL);
+	haycast = (char *)haystack;
+	i = 0;
+	if (!needle[0])
+		return (haycast);
+	while (haycast[i])
+	{
+		j = 0;
+		while (haycast[i + j] && needle[j]
+			&& haycast[i + j] == needle[j])
+			j++;
+		if (!(needle[j]))
+			return (&haycast[i]);
+		i++;
+	}
+	return (NULL);
+}
 
 void	process(t_phi **phi)
 {

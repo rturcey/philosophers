@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 10:36:56 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:50:33 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@ int					init_sem(t_phi **phi, int max);
 void				*check(void *arg);
 void				process(t_phi **phi);
 void				*philosophize(void *arg);
+char				*ft_strstr(const char *haystack, const char *needle);
 
 #endif

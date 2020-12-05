@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 10:36:18 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:50:49 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ int			print_msg(char *dup, t_phi *phi)
 	sem_wait(phi->print);
 	if (g_isdead == 0)
 		print_str(msg, 1);
+	if (g_isdead == 0 && ft_strstr("died\n", msg))
+		g_isdead = 1;
 	free(msg);
 	sem_post(phi->print);
 	return (0);
