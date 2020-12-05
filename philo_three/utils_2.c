@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 17:27:09 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 10:50:20 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:06:59 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ t_phi		**init_phi(int options[5])
 		phi[i]->forks = NULL;
 		phi[i]->print = NULL;
 		phi[i]->eat = NULL;
+		phi[i]->death = NULL;
 		phi[i]->origin = 0;
 		phi[i]->prev_meal = 0;
 		phi[i]->nb_each = 0;

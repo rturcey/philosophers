@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 10:50:33 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:05:58 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct		s_phi
 	sem_t			*forks;
 	sem_t			*print;
 	sem_t			*eat;
+	sem_t			*death;
 	char			*name;
 	pthread_t		thread;
 	pid_t			pid;

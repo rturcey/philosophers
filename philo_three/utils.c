@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 10:52:47 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:06:43 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,11 @@ int			print_msg(char *dup, t_phi *phi)
 	if (!(msg = ft_strjoin_sp(msg, dup)))
 		return (-1);
 	sem_wait(phi->print);
+	sem_wait(phi->death);
 	if (g_isdead == 0)
 		print_str(msg, 1);
+	if (!ft_strstr("died", msg))
+		sem_post(phi->death);
 	free(msg);
 	sem_post(phi->print);
 	return (0);
@@ -49,14 +52,17 @@ int			init_sem(t_phi **phi, int max)
 	int		i;
 	sem_t	*forks;
 	sem_t	*print;
+	sem_t	*death;
 
 	forks = sem_open("forks", O_CREAT, 0644, max);
 	print = sem_open("print", O_CREAT, 0644, 1);
+	death = sem_open("death", O_CREAT, 0644, 1);
 	i = -1;
 	while (++i < max)
 	{
 		phi[i]->print = print;
 		phi[i]->forks = forks;
+		phi[i]->death = death;
 		if (!(phi[i]->eat = init_eat(phi[i])))
 			return (-1);
 	}
@@ -72,6 +78,8 @@ t_phi		**free_phi(t_phi **phi, int max)
 	sem_unlink("forks");
 	sem_close(phi[0]->print);
 	sem_unlink("print");
+	sem_close(phi[0]->death);
+	sem_unlink("death");
 	i = -1;
 	while (++i < max)
 	{
