@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 11:01:58 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:15:29 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,17 @@ void	*check(void *arg)
 		if (phi->time - phi->prev_meal >= phi->time_to_die)
 		{
 			if (g_isdead == 0)
+			{
+				sem_wait(phi->death);
 				print_msg(ft_strdup("died\n"), phi);
+			}
 			g_isdead = 1;
 			sem_post(phi->eat);
-			exit(1);
+			break ;
 		}
 		sem_post(phi->eat);
 	}
-	return (NULL);
+	exit(1);
 }
 
 
