@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/30 10:41:45 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:36:18 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,7 @@ int			print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
-	if (g_isdead)
-	{
-		free(dup);
-		return (0);
-	}
-	if (!(msg = ft_itoa(phi->time)))
+	if (!(msg = ft_itoa(time_ms() - phi->origin)))
 	{
 		free(dup);
 		return (-1);
@@ -33,9 +28,20 @@ int			print_msg(char *dup, t_phi *phi)
 	}
 	if (!(msg = ft_strjoin_sp(msg, dup)))
 		return (-1);
-	print_str(msg, 1);
+	sem_wait(phi->print);
+	if (g_isdead == 0)
+		print_str(msg, 1);
 	free(msg);
+	sem_post(phi->print);
 	return (0);
+}
+
+sem_t		*init_eat(t_phi *phi)
+{
+	if (!(phi->name = ft_strjoin_sp(ft_strdup("eat"), ft_itoa(phi->i))))
+		return (NULL);
+	sem_unlink(phi->name);
+	return (sem_open(phi->name, O_CREAT, 0644, 1));
 }
 
 int			init_sem(t_phi **phi, int max)
@@ -43,48 +49,18 @@ int			init_sem(t_phi **phi, int max)
 	int		i;
 	sem_t	*forks;
 	sem_t	*print;
-	sem_t	*take;
 
 	forks = sem_open("forks", O_CREAT, 0644, max);
 	print = sem_open("print", O_CREAT, 0644, 1);
-	take = sem_open("take", O_CREAT, 0644, 1);
 	i = -1;
 	while (++i < max)
 	{
 		phi[i]->print = print;
 		phi[i]->forks = forks;
-		phi[i]->take = take;
+		if (!(phi[i]->eat = init_eat(phi[i])))
+			return (-1);
 	}
 	return (0);
-}
-
-t_phi		**init_phi(int options[5])
-{
-	int		i;
-	t_phi	**phi;
-
-	i = -1;
-	if (!(phi = malloc(options[0] * sizeof(t_phi))))
-		return (NULL);
-	while (++i < options[0])
-	{
-		if (!(phi[i] = malloc(sizeof(t_phi))))
-			return (free_phi(phi, options[0]));
-		phi[i]->nb = options[0];
-		phi[i]->time_to_die = options[1];
-		phi[i]->time_to_eat = options[2];
-		phi[i]->time_to_sleep = options[3];
-		phi[i]->i = i;
-		phi[i]->forks = NULL;
-		phi[i]->print = NULL;
-		phi[i]->take = NULL;
-		phi[i]->origin = 0;
-		phi[i]->prev_meal = 0;
-		phi[i]->nb_each = 0;
-		if (options[4])
-			phi[i]->nb_each = options[4];
-	}
-	return (phi);
 }
 
 t_phi		**free_phi(t_phi **phi, int max)
@@ -96,11 +72,14 @@ t_phi		**free_phi(t_phi **phi, int max)
 	sem_unlink("forks");
 	sem_close(phi[0]->print);
 	sem_unlink("print");
-	sem_close(phi[0]->take);
-	sem_unlink("take");
 	i = -1;
 	while (++i < max)
+	{
+		sem_close(phi[i]->eat);
+		sem_unlink(phi[i]->name);
+		free(phi[i]->name);
 		free(phi[i]);
+	}
 	free(phi);
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/11/28 17:53:49 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:36:56 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ typedef struct		s_phi
 	time_t			prev_meal;
 	sem_t			*forks;
 	sem_t			*print;
-	sem_t			*take;
+	sem_t			*eat;
+	char			*name;
 	pthread_t		thread;
 	pid_t			pid;
 

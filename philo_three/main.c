@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/11/30 10:37:03 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:41:13 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,31 @@ time_t	time_ms(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
+#include <stdio.h>
+
 void	*check(void *arg)
 {
 	t_phi	*phi;
-	int		i;
 
 	phi = (t_phi *)arg;
-	i = 0;
-	while(phi->origin == 0)
-		++i;
 	while (g_isdead == 0 && g_end < phi->nb)
 	{
-		if (g_isdead == 0 &&
-		time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
+		usleep(1000);
+		sem_wait(phi->eat);
+		phi->time = time_ms() - phi->origin;
+		if (phi->time - phi->prev_meal >= phi->time_to_die)
 		{
-			phi->time = time_ms() - phi->origin;
-			sem_wait(phi->print);
 			if (g_isdead == 0)
 				print_msg(ft_strdup("died\n"), phi);
 			g_isdead = 1;
-			exit (1);
+			sem_post(phi->eat);
+			exit(1);
 		}
+		sem_post(phi->eat);
 	}
 	return (NULL);
 }
+
 
 void	*philosophize(void *arg)
 {
@@ -51,24 +52,17 @@ void	*philosophize(void *arg)
 	int		i;
 
 	phi = (t_phi *)arg;
-	pthread_create(&phi->thread, NULL, check, phi);
 	phi->time = 0;
 	phi->prev_meal = 0;
 	i = -1;
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
 		lock_forks(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
 		is_eating(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
 		unlock_forks(phi);
-		if (g_isdead || (phi->nb_each && i == phi->nb_each - 1))
+		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
 			break ;
 		is_sleeping(phi);
-		if (g_isdead == 1 || check_death(phi))
-			return (NULL);
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
 	g_end++;
