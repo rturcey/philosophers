@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 11:37:49 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:48:16 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
-#include <stdio.h>
 
 typedef struct		s_phi
 {

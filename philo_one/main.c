@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 11:35:43 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:53:23 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,9 @@ void	launch_threads(t_phi **phi)
 {
 	pthread_t	*checks;
 	int			i;
+	int			lever;
 
+	lever = 0;
 	if (!(checks = malloc(sizeof(pthread_t) * phi[0]->nb)))
 		return ;
 	i = 0;
@@ -84,22 +86,12 @@ void	launch_threads(t_phi **phi)
 		pthread_create(&checks[i], NULL, check, phi[i]);
 		usleep(100);
 		i += 2;
-	}
-	i = 1;
-	while (i < phi[0]->nb)
-	{
-		phi[i]->origin = phi[0]->origin;
-		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
-		pthread_create(&checks[i], NULL, check, phi[i]);
-		usleep(100);
-		i += 2;
+		if (i >= phi[0]->nb && lever == 0 && (lever = 1))
+			i = 1;
 	}
 	i = -1;
-	while (++i < phi[0]->nb)
-	{
-		pthread_detach(phi[i]->thread);
+	while (++i < phi[0]->nb && pthread_detach(phi[i]->thread) == 0)
 		pthread_join(checks[i], NULL);
-	}
 	free(checks);
 }
 
@@ -120,5 +112,6 @@ int		main(int argc, char **argv)
 		return (-1);
 	launch_threads(phi);
 	free_phi(phi, phi[0]->nb);
+	system("leaks philo_one");
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 11:17:23 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:56:19 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ time_t	time_ms(void)
 	gettimeofday(&time, NULL);
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
-
-#include <stdio.h>
 
 void	*check(void *arg)
 {
@@ -47,7 +45,6 @@ void	*check(void *arg)
 	}
 	exit(1);
 }
-
 
 void	*philosophize(void *arg)
 {
@@ -110,5 +107,6 @@ int		main(int argc, char **argv)
 		return (-1);
 	launch_threads(phi);
 	free_phi(phi, phi[0]->nb);
+	system("leaks philo_three");
 	return (0);
 }

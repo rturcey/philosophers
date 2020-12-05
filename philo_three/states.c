@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 11:15:14 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:54:36 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		check_death(t_phi *phi)
 		print_msg(ft_strdup("died\n"), phi);
 	}
 	g_isdead = 1;
-	exit (1);
+	exit(1);
 }
 
 void	is_eating(t_phi *phi)

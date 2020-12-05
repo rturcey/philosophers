@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/28 17:27:09 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 11:06:59 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:54:17 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	process(t_phi **phi)
 	}
 }
 
-t_phi		**init_phi(int options[5])
+t_phi	**init_phi(int options[5])
 {
 	int		i;
 	t_phi	**phi;
@@ -82,7 +82,6 @@ t_phi		**init_phi(int options[5])
 		phi[i]->print = NULL;
 		phi[i]->eat = NULL;
 		phi[i]->death = NULL;
-		phi[i]->origin = 0;
 		phi[i]->prev_meal = 0;
 		phi[i]->nb_each = 0;
 		if (options[4])

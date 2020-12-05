@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 11:05:58 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:54:47 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 # include <sys/time.h>
 # include <signal.h>
 # include <semaphore.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 typedef struct		s_phi
 {

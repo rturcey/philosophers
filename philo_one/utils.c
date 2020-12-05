@@ -6,13 +6,13 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 11:38:19 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:48:36 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_one.h"
 
-int		print_msg(char *dup, t_phi *phi)
+int			print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
