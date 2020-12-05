@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 10:17:51 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:26:45 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@ void	lock_forks(t_phi *phi)
 {
 	sem_wait(phi->forks);
 	print_msg(ft_strdup("has taken a fork\n"), phi);
+	while (phi->nb == 1)
+	{
+		if (check_death(phi))
+			return ;
+	}
 	sem_wait(phi->forks);
 	print_msg(ft_strdup("has taken a fork\n"), phi);
 }
