@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 12:00:44 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 14:26:49 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+#include <stdio.h>
 
 typedef struct		s_phi
 {
@@ -33,7 +34,6 @@ typedef struct		s_phi
 	pthread_t		thread;
 	pthread_mutex_t	print;
 	pthread_mutex_t	eat;
-	pthread_mutex_t	death;
 
 }					t_phi;
 

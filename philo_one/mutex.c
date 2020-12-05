@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 16:01:58 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 12:02:51 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 14:27:46 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,10 @@ int				init_mutex(t_phi **phi, int max)
 	while (++i < max)
 		pthread_mutex_init(&forks[i], NULL);
 	pthread_mutex_init(&phi[0]->print, NULL);
-	pthread_mutex_init(&phi[0]->death, NULL);
 	while (--i >= 0)
 	{
 		phi[i]->forks = forks;
 		phi[i]->print = phi[0]->print;
-		phi[i]->death = phi[0]->death;
 		pthread_mutex_init(&phi[i]->eat, NULL);
 	}
 	return (0);

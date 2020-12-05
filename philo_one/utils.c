@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 12:02:25 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 14:39:49 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ t_phi		**free_phi(t_phi **phi, int max)
 	{
 		pthread_mutex_destroy(&phi[0]->print);
 		pthread_mutex_destroy(&phi[0]->eat);
-		pthread_mutex_destroy(&phi[0]->death);
 	}
 	i = -1;
 	while (++i < max)
