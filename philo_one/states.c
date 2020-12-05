@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 12:03:04 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 12:08:49 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,12 @@ int		check_death(t_phi *phi)
 		return (0);
 	if (g_isdead == 0)
 	{
+		usleep(100);
 		pthread_mutex_lock(&phi->death);
 		print_msg(ft_strdup("died\n"), phi);
 	}
 	g_isdead = 1;
+	pthread_mutex_unlock(&phi->death);
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 10:22:02 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 12:10:27 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,17 @@ int			init_sem(t_phi **phi, int max)
 	int		i;
 	sem_t	*forks;
 	sem_t	*print;
+	sem_t	*death;
 
 	forks = sem_open("forks", O_CREAT, 0644, max);
 	print = sem_open("print", O_CREAT, 0644, 1);
+	death = sem_open("death", O_CREAT, 0644, 1);
 	i = -1;
 	while (++i < max)
 	{
 		phi[i]->print = print;
 		phi[i]->forks = forks;
+		phi[i]->death = death;
 		if (!(phi[i]->eat = init_eat(phi[i])))
 			return (-1);
 	}
@@ -72,6 +75,8 @@ t_phi		**free_phi(t_phi **phi, int max)
 	sem_unlink("forks");
 	sem_close(phi[0]->print);
 	sem_unlink("print");
+	sem_close(phi[0]->death);
+	sem_unlink("death");
 	i = -1;
 	while (++i < max)
 	{
