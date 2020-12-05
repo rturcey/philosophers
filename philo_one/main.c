@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 14:59:11 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 15:04:31 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,5 @@ int		main(int argc, char **argv)
 		return (-1);
 	launch_threads(phi);
 	free_phi(phi, phi[0]->nb);
-	system("leaks philo_one");
 	return (0);
 }
