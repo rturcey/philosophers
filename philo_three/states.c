@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 10:54:35 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:02:33 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,10 @@ int		check_death(t_phi *phi)
 	phi->time = time_ms() - phi->origin;
 	if (g_isdead == 0 && ((phi->time - phi->prev_meal) < phi->time_to_die))
 		return (0);
-	return (1);
+	if (g_isdead == 0)
+		print_msg(ft_strdup("died\n"), phi);
+	g_isdead = 1;
+	exit (1);
 }
 
 void	is_eating(t_phi *phi)
