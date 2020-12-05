@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/13 09:48:15 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/05 11:38:42 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 12:03:04 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ int		check_death(t_phi *phi)
 	if (g_isdead == 0 && (phi->time - phi->prev_meal) < phi->time_to_die)
 		return (0);
 	if (g_isdead == 0)
+	{
+		pthread_mutex_lock(&phi->death);
 		print_msg(ft_strdup("died\n"), phi);
+	}
 	g_isdead = 1;
 	return (1);
 }
