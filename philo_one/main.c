@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 16:48:10 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 09:52:16 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ void	*check(void *arg)
 	phi = (t_phi *)arg;
 	while (g_isdead == 0 && g_end < phi->nb)
 	{
+		usleep(phi->time_to_sleep * 10);
 		pthread_mutex_lock(phi->eat);
-		if (time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
+		phi->time = time_ms() - phi->origin;
+		if (phi->time - phi->prev_meal >= phi->time_to_die)
 		{
 			if (g_isdead == 0)
 				print_msg(ft_strdup("died\n"), phi);
@@ -57,7 +59,7 @@ void	*philosophize(void *arg)
 		lock_forks(phi);
 		is_eating(phi);
 		unlock_forks(phi);
-		if (phi->nb_each && i == phi->nb_each - 1)
+		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
 			break ;
 		is_sleeping(phi);
 		print_msg(ft_strdup("is thinking\n"), phi);

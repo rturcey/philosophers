@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 16:48:41 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/04 16:51:47 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ int		print_msg(char *dup, t_phi *phi)
 {
 	char	*msg;
 
-	phi->time = time_ms() - phi->origin;
 	if (!(msg = ft_itoa(phi->time)))
 	{
 		free(dup);
