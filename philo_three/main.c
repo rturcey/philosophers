@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 11:15:29 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:17:23 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int		main(int argc, char **argv)
 	g_end = 0;
 	sem_unlink("forks");
 	sem_unlink("print");
-	sem_unlink("take");
+	sem_unlink("death");
 	if (argc < 5 || argc > 6)
 	{
 		print_str("Incorrect number of arguments.\n", 2);
