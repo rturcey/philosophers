@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/12/04 16:01:58 by rturcey           #+#    #+#             */
-/*   Updated: 2020/12/04 16:09:38 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:26:14 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ pthread_mutex_t	*create_mutex(void)
 {
 	pthread_mutex_t	*new;
 
-	if (!(new = malloc(sizeof(pthread_mutex_t))))
-		return (NULL);
 	pthread_mutex_init(new, NULL);
 	return (new);
 }
