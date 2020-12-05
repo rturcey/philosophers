@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/01 15:00:31 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 10:14:53 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,18 @@ void	*check(void *arg)
 	phi = (t_phi *)arg;
 	while (g_isdead == 0 && g_end < phi->nb)
 	{
-		if (time_ms() - phi->origin - phi->prev_meal >= phi->time_to_die)
+		usleep(1000);
+		sem_wait(phi->eat);
+		phi->time = time_ms() - phi->origin;
+		if (phi->time - phi->prev_meal >= phi->time_to_die)
 		{
-			phi->time = time_ms() - phi->origin;
 			if (g_isdead == 0)
 				print_msg(ft_strdup("died\n"), phi);
 			g_isdead = 1;
+			sem_post(phi->eat);
 			return (NULL);
 		}
+		sem_post(phi->eat);
 	}
 	return (NULL);
 }
@@ -51,17 +55,11 @@ void	*philosophize(void *arg)
 	while (g_isdead == 0 && (!phi->nb_each || ++i < phi->nb_each))
 	{
 		lock_forks(phi);
-		if (check_death(phi))
-			break ;
 		is_eating(phi);
-		if (check_death(phi))
-			break ;
 		unlock_forks(phi);
 		if (check_death(phi) || (phi->nb_each && i == phi->nb_each - 1))
 			break ;
 		is_sleeping(phi);
-		if (check_death(phi))
-			break ;
 		print_msg(ft_strdup("is thinking\n"), phi);
 	}
 	g_end++;
@@ -81,10 +79,9 @@ void	launch_threads(t_phi **phi)
 	{
 		phi[i]->origin = phi[0]->origin;
 		pthread_create(&phi[i]->thread, NULL, philosophize, phi[i]);
-	}
-	i = -1;
-	while (++i < phi[0]->nb)
 		pthread_create(&checks[i], NULL, check, phi[i]);
+		usleep(100);
+	}
 	i = -1;
 	while (++i < phi[0]->nb)
 	{
