@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:45:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 10:25:07 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:38:19 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ int		print_msg(char *dup, t_phi *phi)
 	}
 	if (!(msg = ft_strjoin_sp(msg, dup)))
 		return (-1);
-	pthread_mutex_lock(phi->print);
+	pthread_mutex_lock(&phi->print);
 	if (g_isdead == 0)
 		print_str(msg, 1);
 	free(msg);
-	pthread_mutex_unlock(phi->print);
+	pthread_mutex_unlock(&phi->print);
 	return (0);
 }
 
@@ -54,7 +54,6 @@ t_phi		**init_phi(int options[5])
 		phi[i]->time_to_sleep = options[3];
 		phi[i]->i = i;
 		phi[i]->forks = NULL;
-		phi[i]->print = NULL;
 		if (options[4])
 			phi[i]->nb_each = options[4];
 		else
@@ -71,13 +70,13 @@ t_phi		**free_phi(t_phi **phi, int max)
 	if (phi && phi[0] && phi[0]->forks)
 	{
 		while (++i < max)
-			pthread_mutex_destroy(phi[0]->forks[i]);
+			pthread_mutex_destroy(&phi[0]->forks[i]);
 		free(phi[0]->forks);
 	}
-	if (phi && phi[0] && phi[0]->print)
-		pthread_mutex_destroy(phi[0]->print);
-	if (phi && phi[0] && phi[0]->eat)
-		pthread_mutex_destroy(phi[0]->eat);
+	if (phi && phi[0])
+		pthread_mutex_destroy(&phi[0]->print);
+	if (phi && phi[0])
+		pthread_mutex_destroy(&phi[0]->eat);
 	i = -1;
 	while (++i < max)
 		free(phi[i]);

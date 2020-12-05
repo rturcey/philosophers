@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:51 by user42            #+#    #+#             */
-/*   Updated: 2020/12/04 16:08:08 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:37:49 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ typedef struct		s_phi
 	time_t			origin;
 	time_t			time;
 	time_t			prev_meal;
-	pthread_mutex_t	**forks;
+	pthread_mutex_t	*forks;
 	pthread_t		thread;
-	pthread_mutex_t	*print;
-	pthread_mutex_t	*eat;
+	pthread_mutex_t	print;
+	pthread_mutex_t	eat;
 
 }					t_phi;
 

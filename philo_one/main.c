@@ -6,7 +6,7 @@
 /*   By: rturcey <rturcey@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/10 08:42:42 by user42            #+#    #+#             */
-/*   Updated: 2020/12/05 10:13:36 by rturcey          ###   ########.fr       */
+/*   Updated: 2020/12/05 11:35:43 by rturcey          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,17 @@ void	*check(void *arg)
 	while (g_isdead == 0 && g_end < phi->nb)
 	{
 		usleep(1000);
-		pthread_mutex_lock(phi->eat);
+		pthread_mutex_lock(&phi->eat);
 		phi->time = time_ms() - phi->origin;
 		if (phi->time - phi->prev_meal >= phi->time_to_die)
 		{
 			if (g_isdead == 0)
 				print_msg(ft_strdup("died\n"), phi);
 			g_isdead = 1;
-			pthread_mutex_unlock(phi->eat);
+			pthread_mutex_unlock(&phi->eat);
 			return (NULL);
 		}
-		pthread_mutex_unlock(phi->eat);
+		pthread_mutex_unlock(&phi->eat);
 	}
 	return (NULL);
 }
